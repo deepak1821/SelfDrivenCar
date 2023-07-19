@@ -1,0 +1,256 @@
+import React, { useState, useEffect } from 'react';
+import TextField, { TextFieldProps } from '@mui/material/TextField';
+import './LoginCard.css';
+import { OutlinedInputProps } from '@mui/material/OutlinedInput';
+import { alpha, styled } from '@mui/material/styles';
+import { useNavigate, useParams } from 'react-router-dom';
+import MenuItem from '@mui/material/MenuItem';
+import uploadProfilePic from '../../assets/upload-profile-pic.png';
+import uploadCoverPic from '../../assets/upload-cover-pic.png';
+import star from '../../assets/star.png';
+import axios from 'axios';
+import { API_URL } from '../../pages/utils/AppInfo';
+import Button from '@mui/material/Button';
+import Select from 'react-select';
+
+const currencies = [
+  {
+    value: 'Organization',
+    label: 'Organization',
+  },
+  {
+    value: 'Enquero',
+    label: 'Enquero',
+  },
+  {
+    value: 'Genpact',
+    label: 'Genpact',
+  },
+  {
+    value: 'Infosys',
+    label: 'Infosys',
+  },
+];
+
+const CustomTextFiled = styled((props: TextFieldProps) => (
+  <TextField
+    InputProps={{ disableUnderline: true } as Partial<OutlinedInputProps>}
+    inputProps={{
+      style: {
+        height: '45px',
+        padding: '0 14px',
+        border: '1px solid  #707070 !important',
+      },
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  '& .MuiFilledInput-root': {
+    overflow: 'hidden',
+    borderRadius: 4,
+    padding: '0px',
+    backgroundColor: '#F3F6F9',
+    border: '1px solid  #707070 !important',
+    borderColor: 'black',
+    transition: theme.transitions.create([
+      'border-color',
+      'background-color',
+      'box-shadow',
+    ]),
+    '&:hover': {
+      backgroundColor: 'transparent',
+    },
+    '&.Mui-focused': {
+      backgroundColor: 'transparent',
+      boxShadow: '',
+      borderColor: '1px solid #707070 !important',
+    },
+  },
+  '& .MuiInputLabel-root': {
+    fontSize: '12px !important',
+  },
+}));
+
+const LoginCard = () => {
+  const [userName, setUserName] = useState('');
+  const [organizationName, setOrganizationName] = useState('');
+  const [industryName, setIndustryName] = useState('');
+  const [profilePic, setProfilePic] = useState('');
+  const [coverPic, setCoverPic] = useState('');
+
+  const navigate = useNavigate();
+  console.log(API_URL);
+
+  let items = JSON.stringify({
+    inputFileItems: [
+      userName,
+      organizationName,
+      industryName,
+      profilePic,
+      coverPic,
+    ],
+  });
+
+  const onLogin = async () => {
+    try {
+      let config = {
+        method: 'POST',
+        maxBodyLength: Infinity,
+        url: `http://13.235.94.204:8080/login/submitUserDetails`,
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        data: {
+          inputFileLocation: ['enquero', 'cetuser2'],
+          items: items,
+        },
+      };
+
+      // localStorage.setItem('companyName', config.data.inputFileLocation[0]);
+      localStorage.setItem('userName', userName);
+      localStorage.setItem('organizationName', organizationName);
+      localStorage.setItem('industryName', industryName);
+      localStorage.setItem('profilePic', profilePic);
+      localStorage.setItem('coverPic', coverPic);
+      if (userName === '') {
+        alert('userName is required');
+      } else if (organizationName === '') {
+        alert('organizationName is required');
+      } else if (industryName === '') {
+        alert('industryName is required');
+      } else {
+        axios
+          .request(config)
+          .then((response) => {
+            console.log(JSON.stringify(response.data));
+            localStorage.setItem('isLogin', 'true');
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        navigate('/home');
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const handleProfilePic = (e) => {
+    setProfilePic(e.target.files[0]);
+    setCoverPic(e.target.files[0]);
+    console.log(e.target.files);
+  };
+  const handleSelect = (e) => {
+    console.log(e);
+    setIndustryName(e.value);
+  };
+
+  const handleSelectOrganization = (e) => {
+    console.log(e);
+    setOrganizationName(e.value);
+  };
+
+  return (
+    <div className='login-card-container'>
+      <div className='login-card-header'>
+        <p className='login-card-heading'>User Details</p>
+        <div className='login-card-profile'>
+          <div className=''>
+            <input
+              style={{ display: 'none' }}
+              id='contained-button-file'
+              type='file'
+              onChange={handleProfilePic}
+            />
+            <label
+              htmlFor='contained-button-file'
+              className='upload-profile-pic'
+            >
+              <div className='upload-profile-picHeading'>
+                Upload Profile Pic
+              </div>
+              <img src={uploadProfilePic} style={{ height: '50px' }} />
+            </label>
+          </div>
+          <div className=''>
+            <input
+              style={{ display: 'none' }}
+              id='contained-button-file'
+              type='file'
+            />
+            <label
+              htmlFor='contained-button-file'
+              className='upload-profile-pic'
+            >
+              <div className='upload-profile-picHeading'>Upload Cover Pic</div>
+              <img
+                src={uploadCoverPic}
+                style={{ height: '36px', marginTop: '5px' }}
+                onChange={handleProfilePic}
+              />
+            </label>
+          </div>
+        </div>
+        {/* <p className="login-card-link-button" onClick={() => navigate('/create-account')}>Create Account</p> */}
+      </div>
+      <div className='login-text-filed-container'>
+        <div className='login-text-filed'>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <img src={star} style={{ height: '10px', marginTop: '10px' }} />
+            <label style={{ fontSize: '14px' }}>Name</label>
+          </div>
+          <CustomTextFiled
+            style={{
+              fontSize: '10px',
+              border: '1px solid #707070',
+              borderRadius: '5px',
+            }}
+            placeholder='Name'
+            id='name'
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            size='small'
+          />
+        </div>
+        <div className='login-text-filed'>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <img src={star} style={{ height: '10px', marginTop: '10px' }} />
+            <label style={{ fontSize: '14px' }}>Organization</label>
+          </div>
+          <Select
+            className='basic-single'
+            classNamePrefix='select'
+            defaultValue={currencies[0]}
+            isSearchable
+            name='color'
+            onChange={handleSelectOrganization}
+            options={currencies}
+          />
+        </div>
+        <div className='login-text-filed'>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <img src={star} style={{ height: '10px', marginTop: '10px' }} />
+            <label style={{ fontSize: '14px' }}>Industry</label>
+          </div>
+          <Select
+            className='basic-single'
+            classNamePrefix='select'
+            defaultValue={currencies[0]}
+            isSearchable
+            name='color'
+            onChange={handleSelect}
+            options={currencies}
+          />
+        </div>
+        <div className='login-card-footer-container'>
+          <button className='login-card-button' onClick={onLogin}>
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LoginCard;
