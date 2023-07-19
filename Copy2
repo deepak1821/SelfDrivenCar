@@ -1,0 +1,40 @@
+// ... inside the JSX ...
+<div className='login-card-profile'>
+  <div className=''>
+    <input
+      style={{ display: 'none' }}
+      id='profile-pic-upload'
+      type='file'
+      onChange={handleProfilePic}
+    />
+    <label htmlFor='profile-pic-upload' className='upload-profile-pic'>
+      <div className='upload-profile-picHeading'>
+        Upload Profile Pic
+      </div>
+      {profilePic ? (
+        <img src={profilePic} style={{ height: '50px' }} />
+      ) : (
+        <img src={uploadProfilePic} style={{ height: '50px' }} />
+      )}
+    </label>
+  </div>
+  <div className=''>
+    <input
+      style={{ display: 'none' }}
+      id='cover-pic-upload'
+      type='file'
+      onChange={handleCoverPic}
+    />
+    <label htmlFor='cover-pic-upload' className='upload-profile-pic'>
+      <div className='upload-profile-picHeading'>
+        Upload Cover Pic
+      </div>
+      {coverPic ? (
+        <img src={coverPic} style={{ height: '36px', marginTop: '5px' }} />
+      ) : (
+        <img src={uploadCoverPic} style={{ height: '36px', marginTop: '5px' }} />
+      )}
+    </label>
+  </div>
+</div>
+// ... continue with the rest of the JSX ...
