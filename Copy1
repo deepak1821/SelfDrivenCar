@@ -1,0 +1,27 @@
+const LoginCard = () => {
+  // ... other code ...
+
+  const handleProfilePic = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePic(reader.result); // Set the uploaded image as the profilePic state
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCoverPic = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCoverPic(reader.result); // Set the uploaded image as the coverPic state
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // ... other code ...
+};
