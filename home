@@ -65,3 +65,47 @@ const HomePageHeader = () => {
 };
 
 export default HomePageHeader;
+
+------------------------------------------------------------------------------------------------------------------------------------------
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
+import './HomePageHeader.css';
+// ... other imports
+
+const HomePageHeader = () => {
+  // State and useEffect hooks
+
+  // Remaining code...
+
+  // Navigation function
+  const navigate = useNavigate(); // Use the useNavigate hook to get the navigation function
+
+  // Logout function
+  const handleLogout = () => {
+    // Here, you can clear user session or authentication state (if using a state management library)
+    // For example, remove tokens, user information, or clear the local storage
+    localStorage.removeItem('userName');
+    localStorage.removeItem('uploadCoverPic');
+
+    // Redirect to the login page
+    navigate('/login'); // Use navigate function to redirect to the login page
+  };
+
+  return (
+    <div>
+      <div className='UserProfile'>
+        {/* Remaining code... */}
+      </div>
+      <div className='WelcomeColumn'>
+        {/* Remaining code... */}
+        <div className='ExploreButton'>
+          {/* Remaining code... */}
+        </div>
+      </div>
+      <StoriesSlider />
+      <button onClick={handleLogout}>Logout</button>
+    </div>
+  );
+};
+
+export default HomePageHeader;
