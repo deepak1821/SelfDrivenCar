@@ -1,0 +1,70 @@
+import React, { useState, useEffect } from 'react';
+import './HomePageHeader.css';
+import HeaderPhoto from '../../assets/HeaderPhoto.png';
+import UserPhoto from '../../assets/userPhoto.png';
+import arrowrightWhite from '../../assets/arrow-right-icon-midnight-white.png';
+import { useNavigate } from 'react-router-dom';
+import HomePage from '../../pages/ClientStories/StoriesHomePage';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { AccordionSummary } from '@mui/material';
+import { Navigation } from 'swiper';
+import StoriesHomePage from '../../pages/ClientStories/StoriesHomePage';
+import StoriesSlider from '../../pages/ClientStories/StoriesSlider';
+
+const HomePageHeader = () => {
+  const [userName, setUserName] = useState<null | any>(null);
+  const [uploadCoverPic, setUploadCoverPic] = useState<null | any>(null);
+
+  useEffect(() => {
+    let userLogin = localStorage.getItem('userName');
+    let userCoverPic = localStorage.getItem('uploadCoverPic');
+    setUserName(userLogin);
+    setUploadCoverPic(userCoverPic);
+    console.log(typeof userLogin);
+  });
+
+  const navigate = useNavigate();
+  return (
+    <div>
+      <div className='UserProfile'>
+        <img src={HeaderPhoto} />
+        <div className='userPhotoColumn'>
+          <img src={UserPhoto} className='UserPhoto' />
+        </div>
+      </div>
+      <div className='WelcomeColumn'>
+        <h1 className='Welcome-Ben'>Welcome {userName}!</h1>
+        <div className='Ready-to-deep-dive-into-problem-space'>
+          <span className='arrowKey'>“</span>
+          Ready to deep dive into problem space!
+          <span className='arrowKey'>”</span>
+        </div>
+        <div className='ExploreButton'>
+          <button
+            onClick={() => navigate('/exploration')}
+            style={{
+              backgroundColor: '#ff555f',
+              width: '300px',
+              height: '20px',
+              textAlign: 'center',
+              margin: '10.6px 30px 10px 40px',
+              padding: '14px 5px 27px 100px',
+            }}
+            className='explore-button'
+          >
+            <text
+              className='EXPLORE'
+              style={{ color: '#ffffff', marginRight: '5px' }}
+            >
+              EXPLORE
+            </text>
+            <img style={{ height: 18 }} src={arrowrightWhite} />
+          </button>
+        </div>
+      </div>
+      <StoriesSlider></StoriesSlider>
+    </div>
+  );
+};
+
+export default HomePageHeader;
