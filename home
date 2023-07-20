@@ -12,31 +12,28 @@ import StoriesHomePage from '../../pages/ClientStories/StoriesHomePage';
 import StoriesSlider from '../../pages/ClientStories/StoriesSlider';
 
 const HomePageHeader = () => {
-  const [userName, setUserName] = useState<null | any>(null);
-  const [uploadCoverPic, setUploadCoverPic] = useState<null | any>(null);
+  const [userName, setUserName] = useState(null);
 
   useEffect(() => {
     let userLogin = localStorage.getItem('userName');
-    let userCoverPic = localStorage.getItem('uploadCoverPic');
     setUserName(userLogin);
-    setUploadCoverPic(userCoverPic);
-    console.log(typeof userLogin);
-  });
+  }, []);
 
   const navigate = useNavigate();
+
   return (
     <div>
       <div className='UserProfile'>
-        <img src={HeaderPhoto} />
+        <img src={HeaderPhoto} alt="Header" />
         <div className='userPhotoColumn'>
-          <img src={UserPhoto} className='UserPhoto' />
+          <img src={UserPhoto} className='UserPhoto' alt="User" />
         </div>
       </div>
       <div className='WelcomeColumn'>
         <h1 className='Welcome-Ben'>Welcome {userName}!</h1>
         <div className='Ready-to-deep-dive-into-problem-space'>
           <span className='arrowKey'>“</span>
-          Ready to deep dive into problem space!
+          Ready to deep dive into the problem space!
           <span className='arrowKey'>”</span>
         </div>
         <div className='ExploreButton'>
@@ -58,11 +55,11 @@ const HomePageHeader = () => {
             >
               EXPLORE
             </text>
-            <img style={{ height: 18 }} src={arrowrightWhite} />
+            <img style={{ height: 18 }} src={arrowrightWhite} alt="Arrow Right" />
           </button>
         </div>
       </div>
-      <StoriesSlider></StoriesSlider>
+      <StoriesSlider />
     </div>
   );
 };
