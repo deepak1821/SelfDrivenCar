@@ -1,111 +1,130 @@
-import React, { useState, useEffect } from 'react';
-import './HomePageHeader.css';
-import HeaderPhoto from '../../assets/HeaderPhoto.png';
-import UserPhoto from '../../assets/userPhoto.png';
-import arrowrightWhite from '../../assets/arrow-right-icon-midnight-white.png';
-import { useNavigate } from 'react-router-dom';
-import HomePage from '../../pages/ClientStories/StoriesHomePage';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { AccordionSummary } from '@mui/material';
-import { Navigation } from 'swiper';
-import StoriesHomePage from '../../pages/ClientStories/StoriesHomePage';
-import StoriesSlider from '../../pages/ClientStories/StoriesSlider';
+import React, { useEffect, useState } from 'react';
+import logo from '../assets/Logocrop.png';
+import genpact from '../assets/righlogo.png';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Avatar from '@mui/material/Avatar';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import './Header.css';
+// import { useNavigate } from 'react-router-dom';
 
-const HomePageHeader = () => {
-  const [userName, setUserName] = useState(null);
+function Header() {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [userName, setUserName] = useState<null | any>(null);
+  const [organizationName, setOrganizationName] = useState<null | any>(null);
+  const [industryName, setIndustryName] = useState<null | any>(null);
+  const [uploadProfilePic, setUploadProfilePic] = useState<null | any>(null);
+  const [showLogOut, setShowLogout] = useState(true);
 
   useEffect(() => {
     let userLogin = localStorage.getItem('userName');
+    let userOrganization = localStorage.getItem('organizationName');
+    let userIndustry = localStorage.getItem('industryName');
+    let userProfilePic = localStorage.getItem('uploadProfilePic');
+
     setUserName(userLogin);
-  }, []);
+    setOrganizationName(userOrganization);
+    setIndustryName(userIndustry);
+    setUploadProfilePic(userProfilePic);
+    console.log(typeof userLogin);
+  });
+  const open = Boolean(anchorEl);
 
-  const navigate = useNavigate();
+  const isLogin = localStorage.getItem('isLogin');
+  console.log(isLogin);
 
-  return (
-    <div>
-      <div className='UserProfile'>
-        <img src={HeaderPhoto} alt="Header" />
-        <div className='userPhotoColumn'>
-          <img src={UserPhoto} className='UserPhoto' alt="User" />
-        </div>
-      </div>
-      <div className='WelcomeColumn'>
-        <h1 className='Welcome-Ben'>Welcome {userName}!</h1>
-        <div className='Ready-to-deep-dive-into-problem-space'>
-          <span className='arrowKey'>“</span>
-          Ready to deep dive into the problem space!
-          <span className='arrowKey'>”</span>
-        </div>
-        <div className='ExploreButton'>
-          <button
-            onClick={() => navigate('/exploration')}
-            style={{
-              backgroundColor: '#ff555f',
-              width: '300px',
-              height: '20px',
-              textAlign: 'center',
-              margin: '10.6px 30px 10px 40px',
-              padding: '14px 5px 27px 100px',
-            }}
-            className='explore-button'
-          >
-            <text
-              className='EXPLORE'
-              style={{ color: '#ffffff', marginRight: '5px' }}
-            >
-              EXPLORE
-            </text>
-            <img style={{ height: 18 }} src={arrowrightWhite} alt="Arrow Right" />
-          </button>
-        </div>
-      </div>
-      <StoriesSlider />
-    </div>
-  );
-};
+  // const navigate = useNavigate();
 
-export default HomePageHeader;
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
-------------------------------------------------------------------------------------------------------------------------------------------
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
-import './HomePageHeader.css';
-// ... other imports
-
-const HomePageHeader = () => {
-  // State and useEffect hooks
-
-  // Remaining code...
-
-  // Navigation function
-  const navigate = useNavigate(); // Use the useNavigate hook to get the navigation function
-
-  // Logout function
-  const handleLogout = () => {
-    // Here, you can clear user session or authentication state (if using a state management library)
-    // For example, remove tokens, user information, or clear the local storage
-    localStorage.removeItem('userName');
-    localStorage.removeItem('uploadCoverPic');
-
-    // Redirect to the login page
-    navigate('/login'); // Use navigate function to redirect to the login page
+  const onLogOut = () => {
+    // navigate('/');
+    localStorage.setItem('isLogin', 'false');
+    localStorage.clear();
+    setShowLogout(false);
   };
 
   return (
-    <div>
-      <div className='UserProfile'>
-        {/* Remaining code... */}
-      </div>
-      <div className='WelcomeColumn'>
-        {/* Remaining code... */}
-        <div className='ExploreButton'>
-          {/* Remaining code... */}
+    <div className='header-container'>
+      <div>
+        <img
+          src={logo}
+          style={{ height: 80, display: 'inline-block', marginLeft: 10 }}
+        ></img>
+        <div style={{ display: 'inline-block' }}>
+          <div className='CET'>CET</div>
+          <hr className='hr' />
+          <div className='Customer-Experience-Theatre'>
+            Customer Experience Theatre
+          </div>
         </div>
       </div>
-      <StoriesSlider />
-      <button onClick={handleLogout}>Logout</button>
+      <div>
+        <img src={genpact} style={{ height: 30 }}></img>
+        <Box
+          className='profile-headerColumn'
+          sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}
+        >
+          <Typography
+            noWrap
+            component='div'
+            sx={{
+              textAlign: 'right',
+              flexGrow: 1,
+            }}
+          >
+            {userName}
+            <br />
+            {organizationName}
+            <br />
+            {industryName}
+          </Typography>
+          <IconButton
+            onClick={handleClick}
+            size='small'
+            sx={{ ml: 2 }}
+            aria-controls={open ? 'account-menu' : undefined}
+            aria-haspopup='true'
+            aria-expanded={open ? 'true' : undefined}
+          >
+            <Avatar alt='Remy Sharp' src={uploadProfilePic} />
+            <KeyboardArrowDownIcon style={{ color: 'red' }} />
+          </IconButton>
+        </Box>
+        <Menu
+          anchorEl={anchorEl}
+          id='account-menu'
+          className='Profile-BoxColumn'
+          open={open}
+          onClose={handleClose}
+          onClick={handleClose}
+          PaperProps={{
+            elevation: 0,
+            sx: {
+              overflow: 'visible',
+              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+              mt: 0,
+            },
+          }}
+          transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        >
+          <MenuItem onClick={handleClose}>Profile</MenuItem>
+          <Divider />
+          <MenuItem onClick={onLogOut}>Logout</MenuItem>
+        </Menu>
+      </div>
     </div>
   );
-};
+}
 
-export default HomePageHeader;
+export default Header;
