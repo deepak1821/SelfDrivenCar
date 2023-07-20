@@ -128,3 +128,40 @@ function Header() {
 }
 
 export default Header;
+
+--------------------------------------------------------------------------------------------
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom'; // Import useHistory hook
+// ... other imports
+
+function Header() {
+  // State and useEffect hooks
+
+  // Remaining code...
+
+  const history = useHistory(); // Use useHistory hook to get the history object
+
+  // Logout function and redirection
+  const onLogOut = () => {
+    localStorage.removeItem('isLogin');
+    localStorage.clear();
+    setShowLogout(false);
+    history.push('/login'); // Redirect to the login page
+  };
+
+  return (
+    <div className='header-container'>
+      {/* ... remaining JSX code ... */}
+      <Menu
+        // ... Menu props ...
+      >
+        <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <Divider />
+        <MenuItem onClick={onLogOut}>Logout</MenuItem>
+      </Menu>
+    </div>
+  );
+}
+
+export default Header;
+
