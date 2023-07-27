@@ -398,4 +398,49 @@ CSS
   font-size: 10px;
 }
 
+----------------------------------chatgpt-----------------------------------------------------------------------------------
+const renderTree = () => {
+  // ... (existing code)
+
+  // Append text labels to the nodes
+  nodes
+    .append('text')
+    .attr('dy', '.31em')
+    .attr('dx', (d) => (d.x < 180 ? 8 : -8))
+    .attr('text-anchor', (d) => (d.x < 180 ? 'start' : 'end'))
+    .attr('paint-order', 'stroke')
+    .attr('stroke', 'white')
+    .attr('fill', 'currentColor')
+    .attr('text-anchor', (d) => (d.x < 180 ? 'start' : 'end'))
+    .attr('transform', (d) => (d.x < 180 ? null : 'rotate(180)'))
+    .text((d) => (d.depth !== 0 ? d.data.name : null))
+    .attr('id', (d) => d.data.name)
+    .style('font-weight', (d) =>
+      isSearchedProblemPresent(d.data.name, d.parent?.data?.name)
+        ? 'bold'
+        : 'unset'
+    )
+    .style('text-shadow', (d) =>
+      isSearchedProblemPresent(d.data.name, d.parent?.data?.name) &&
+      d.depth > 1
+        ? '0px 0px 10px #ff555f'
+        : 'unset'
+    )
+    .style('font-size', '14px') // Increase font size
+    .style('font-weight', 'bold'); // Make the text bold
+
+  // Enable word-wrap for text elements inside nodes
+  nodes
+    .append('foreignObject')
+    .attr('dy', '.31em')
+    .attr('dx', (d) => (d.x < 180 ? 8 : -8))
+    .attr('text-anchor', (d) => (d.x < 180 ? 'start' : 'end'))
+    .attr('transform', (d) => (d.x < 180 ? null : 'rotate(180)'))
+    .attr('width', 100) // Set the width of the foreignObject
+    .attr('height', 100) // Set the height of the foreignObject
+    .html((d) => (d.depth !== 0 ? d.data.name : null))
+    .style('font-size', '14px') // Increase font size
+    .style('font-weight', 'bold') // Make the text bold
+    .style('overflow-wrap', 'break-word'); // Enable word-wrap
+};
 
