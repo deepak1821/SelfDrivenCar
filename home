@@ -416,3 +416,16 @@ nodes.selectAll('text').each(function (d, i) {
       textNode.append('tspan').attr('x', 0).attr('y', 0).text(truncatedText);
     }
   });
+
+==---------------------------------------------------------------
+
+
+ERROR in src/pages/ProblemList/ProblemList.tsx:216:44
+TS2683: 'this' implicitly has type 'any' because it does not have a type annotation.
+    214 |             .style('font-weight', 'bold') // Make the text bold
+    215 |             nodes.selectAll('text').each(function (d, i) {
+  > 216 |                 const textNode = d3.select(this[i]); // Access the DOM element directly using the index 'i'
+        |                                            ^^^^
+    217 |                 const text = textNode.text();
+    218 |                 const maxWidth = 100; // Set the maximum width for the text
+    219 |
