@@ -305,3 +305,97 @@ const ProblemList = ({ selectedData, selectData }) => {
 
 export default ProblemList;
 
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+CSS
+.problem-list-outer-container {
+  padding: 20px;
+}
+
+.problem-List-container {
+    position: relative;
+    
+}
+
+.problem-list-heading {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 500;
+  color: #073262;
+}
+
+ /*.problem-List-container .svg-container {
+    animation-duration: 100s;
+    animation-iteration-count: infinite;
+    //animation-name: clockwiseSpin;
+    animation-timing-function: linear;
+    
+}
+
+@keyframes clockwiseSpin {
+    from  {
+      transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }	
+} */
+
+.problem-List-container svg image {
+  width: 80px;
+  height: 80px;
+  transform: rotate(277.5deg);
+  border-radius: 20px;
+  z-index: 1;
+}
+
+.check {
+    display: inline-block;
+    transform: rotate(45deg);
+    height: 6px;
+    width: 8px;
+    border-bottom: 5px solid #78b13f;
+    border-right: 5px solid #78b13f
+}
+
+.problem-List-container svg text#chk {
+    fill: #00f;
+  
+}
+
+.keyword-dialog-parent-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.action-tooltip-container {
+  display: none;
+  position: absolute;
+  border: 2px solid #fba265;
+  background: white;
+  border-radius: 5px;
+  padding: 5px;
+  top: 0;
+  left: 0;
+  column-gap: 8px;
+}
+
+.action-tooltip-container div {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.action-tooltip-container div svg,
+.action-tooltip-container div p {
+  font-size: 10px;
+}
+
+
