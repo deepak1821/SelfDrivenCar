@@ -107,18 +107,17 @@ const ProblemList = ({ selectedData, selectData }) => {
     const renderTree = () => {
         if(treeData?.children?.length > 0) {
             // Specify the chart’s dimensions.
-            const width = 920;
+            const width = 928;
             const height = width;
             const cx = width * 0.5; // adjust as needed to fit
             const cy = height * 0.5; // adjust as needed to fit
-
 
             // Create the SVG container
             const svg = d3.select(svgRef.current)
             .attr('width', width)
             .attr('height', height)
             .attr("viewBox", [-cx, -cy, width, height])
-            .attr("style", "width: 100%; height: auto; font: 8px sans-serif;")
+            .attr("style", "width: 100%; height: auto; font: 11px sans-serif;display: block ")
             // .call(
             //     d3.drag()
             //     .on('start', d => {
@@ -207,10 +206,25 @@ const ProblemList = ({ selectedData, selectData }) => {
             .attr("fill", "currentColor")
             .attr("text-anchor", d => d.x < 180 ? "start" : "end")
             .attr("transform", d => d.x < 180 ? null : "rotate(180)")
-            .text(d => d.depth !== 0 ? d.data.name : null)
+            .text(d => d.depth !== 0 ?  d.data.name : null)
+            .text(d=>d.data.name.length>10 ? d.data.name.slice(0,18)+'....' : d.data.name)
             .attr('id', d => d.data.name)
-            .style('font-weight', d => (isSearchedProblemPresent(d.data.name, d.parent?.data?.name) && (d.depth > 1)) ? 'bold' : 'unset')
             .style('text-shadow', d => (isSearchedProblemPresent(d.data.name, d.parent?.data?.name)  && (d.depth > 1)) ? '0px 0px 10px #ff555f' : 'unset')
+            .style('font-weight','bold')
+            .on("mouseover", (d, item) => {
+                if(item.depth > 1) {
+                    setSelectedProblem(item.data.name);
+                    d3.select("#actionTooltip1").style("display", 'flex')
+                    setActionTooltipXaxis(d.offsetX + "px")
+                    setActionTooltipYaxis(d.offsetY + "px")
+                }
+            })
+            .on("mouseleave", function (d) {
+                d3.select("#actionTooltip1").style("display", 'none')
+            })
+            
+
+            
 
         }
     }
@@ -298,134 +312,28 @@ const ProblemList = ({ selectedData, selectData }) => {
                         <p>Remove</p>
                     </div>
                 </div>
+
+                <div
+                    id="actionTooltip1"
+                    //onMouseOver={() => d3.select("#actionTooltip").style("display", 'flex')}
+                    //onMouseLeave={() => d3.select("#actionTooltip").style("display", 'none')}
+                    className="action-tooltip-container"
+                    style={{ top: actionTooltipYaxis, left: actionTooltipXaxis }}
+                >
+                    <div
+                        style={{color: isProblemPresent(selectedProblem) ? 'rgba(0, 0, 0, 0.23)' : 'black'}} 
+                        onClick={() => (!isProblemPresent(selectedProblem) && updateSelectedItem(selectedProblem))}
+                    >
+                        <ControlPointOutlinedIcon />
+                        
+                    <p></p>
+                    </div>
+                   
+                </div>
+                
             </div>
         </div>
     );
 };
 
 export default ProblemList;
-
-
-
-
-
-----------------------------------------------------------------------------------------------------------------------------------------------
-
-CSS
-.problem-list-outer-container {
-  padding: 20px;
-}
-
-.problem-List-container {
-    position: relative;
-    
-}
-
-.problem-list-heading {
-  margin-top: 20px;
-  text-align: center;
-  font-size: 22px;
-  font-weight: 500;
-  color: #073262;
-}
-
- /*.problem-List-container .svg-container {
-    animation-duration: 100s;
-    animation-iteration-count: infinite;
-    //animation-name: clockwiseSpin;
-    animation-timing-function: linear;
-    
-}
-
-@keyframes clockwiseSpin {
-    from  {
-      transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }	
-} */
-
-.problem-List-container svg image {
-  width: 80px;
-  height: 80px;
-  transform: rotate(277.5deg);
-  border-radius: 20px;
-  z-index: 1;
-}
-
-.check {
-    display: inline-block;
-    transform: rotate(45deg);
-    height: 6px;
-    width: 8px;
-    border-bottom: 5px solid #78b13f;
-    border-right: 5px solid #78b13f
-}
-
-.problem-List-container svg text#chk {
-    fill: #00f;
-  
-}
-
-.keyword-dialog-parent-container {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-}
-
-.action-tooltip-container {
-  display: none;
-  position: absolute;
-  border: 2px solid #fba265;
-  background: white;
-  border-radius: 5px;
-  padding: 5px;
-  top: 0;
-  left: 0;
-  column-gap: 8px;
-}
-
-.action-tooltip-container div {
-  display: flex;
-  column-gap: 8px;
-  align-items: center;
-  cursor: pointer;
-}
-
-.action-tooltip-container div svg,
-.action-tooltip-container div p {
-  font-size: 10px;
-}
-
-----------------------------------chatgpt-----------------------------------------------------------------------------------
-nodes.selectAll('text').each(function (d, i) {
-    const textNode = d3.select(this[i]); // Access the DOM element directly using the index 'i'
-    const text = textNode.text();
-    const maxWidth = 100; // Set the maximum width for the text
-
-    if (textNode.node().getComputedTextLength() > maxWidth) {
-      textNode.text(''); // Clear the original text
-
-      let truncatedText = text;
-      while (textNode.node().getComputedTextLength() > maxWidth) {
-        truncatedText = truncatedText.slice(0, -1); // Remove one character at a time
-        textNode.text(truncatedText + '...');
-      }
-
-      textNode.append('tspan').attr('x', 0).attr('y', 0).text(truncatedText);
-    }
-  });
-
-==---------------------------------------------------------------
-
-
-ERROR in src/pages/ProblemList/ProblemList.tsx:216:44
-TS2683: 'this' implicitly has type 'any' because it does not have a type annotation.
-    214 |             .style('font-weight', 'bold') // Make the text bold
-    215 |             nodes.selectAll('text').each(function (d, i) {
-  > 216 |                 const textNode = d3.select(this[i]); // Access the DOM element directly using the index 'i'
-        |                                            ^^^^
-    217 |                 const text = textNode.text();
-    218 |                 const maxWidth = 100; // Set the maximum width for the text
-    219 |
