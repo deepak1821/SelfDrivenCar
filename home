@@ -337,3 +337,65 @@ const ProblemList = ({ selectedData, selectData }) => {
 };
 
 export default ProblemList;
+----------------------------------------------chatgpt response-------------------------------------------------------------------------
+To add content to the box that appears on hovering over the nodes in the tree diagram, you can modify the renderTree function in the ProblemList component. Currently, there are two action tooltips being rendered, one with the ID actionTooltip and another with the ID actionTooltip1. We'll use the actionTooltip for displaying the content on hover.
+
+1. First, add a state to hold the content to be displayed in the tooltip. Add the following line inside the ProblemList component:
+        const [tooltipContent, setTooltipContent] = useState("");
+
+2. Update the renderTree function to set the tooltipContent state when hovering over a node. Modify the following part of the function:
+.on("mouseover", (d, item) => {
+    if (item.depth > 1) {
+        setSelectedProblem(item.data.name);
+        setTooltipContent(item.data.name); // Set the content for the tooltip
+        d3.select("#actionTooltip").style("display", "flex");
+        setActionTooltipXaxis(d.offsetX + "px");
+        setActionTooltipYaxis(d.offsetY + "px");
+    }
+})
+
+3. Next, modify the JSX content of the ProblemList component to display the tooltipContent inside the actionTooltip div:
+<div
+    id="actionTooltip"
+    onMouseOver={() => d3.select("#actionTooltip").style("display", "flex")}
+    onMouseLeave={() => d3.select("#actionTooltip").style("display", "none")}
+    className="action-tooltip-container"
+    style={{ top: actionTooltipYaxis, left: actionTooltipXaxis }}
+>
+    <div>
+        {tooltipContent} {/* Display the tooltip content */}
+    </div>
+    <div
+        style={{
+            color: isProblemPresent(selectedProblem)
+                ? "rgba(0, 0, 0, 0.23)"
+                : "black",
+        }}
+        onClick={() =>
+            !isProblemPresent(selectedProblem) &&
+            updateSelectedItem(selectedProblem)
+        }
+    >
+        <ControlPointOutlinedIcon />
+        <p>Add</p>
+    </div>
+    <div
+        style={{
+            color: !isProblemPresent(selectedProblem)
+                ? "rgba(0, 0, 0, 0.23)"
+                : "black",
+        }}
+        onClick={() =>
+            isProblemPresent(selectedProblem) &&
+            removeSelectedItem(selectedProblem)
+        }
+    >
+        <RemoveCircleOutlineOutlinedIcon />
+        <p>Remove</p>
+    </div>
+</div>
+
+
+With these changes, the content of the tooltip will be updated to display the name of the selected node when hovering over it. 
+The tooltip will show the "Add" and "Remove" buttons as before, but now it will also display the name of the node being hovered over. 
+You can further customize the tooltip's content and style as needed based on your requirements.
