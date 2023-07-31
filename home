@@ -1,401 +1,109 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as d3 from 'd3';
+import React, { useState } from 'react';
+import './BusinessVertical.css';
+import RightArrow from '../../assets/RightArrow.png';
+import ArrowUp from '../../assets/ArrowUp.png';
+import CrossIcon from '../../assets/CrossIcon.png';
+import { useNavigate } from 'react-router-dom';
+import ServicesSales from '../ServicesSales/ServicesSales';
 import axios from 'axios';
-import TreeRoot from '../../assets/Tree-root.png';
-import KeywordDialog from '../../components/ProblemSolving/KeywordDialog/KeywordDialog';
-import KeywordSearch from '../../components/ProblemSolving/KeywordSearch/KeywordSearch';
-import ControlPointOutlinedIcon from '@mui/icons-material/ControlPointOutlined';
-import RemoveCircleOutlineOutlinedIcon from '@mui/icons-material/RemoveCircleOutlineOutlined';
-import './ProblemList.css';
 
-let redMulberry = '#C0392B',
-    red = '#E74C3C',
-    lightPink = '#9B59B6',
-    darkPink = '#8E44AD',
-    parrotGreen = '#3498DB',
-    blueMariner = '#2980B9',
-    blueCurious = '#3498DB',
-    brightCyan = '#1ABC9C',
-    shadeGreenCyan = '#16A085',
-    green = '#27AE60',
-    lightGreen = '#2ECC71',
-    shadeYellow = '#F1C40F',
-    greatLightOrange = '#F39C12',
-    lightOrange = '#E67E22',
-    burntOrange = '#D35400',
-    silverSand = '#BDC3C7',
-    concrete = '#95A5A6',
-    osloGrey = '#7F8C8D',
-    darkBlue = '#34495E',
-    aqua = '#51f3d4',
-    pulpyOrange = '#f87770',
-    blue = '#7f70f6',
-    yellow = '#fadf44'
 
-let colors = [redMulberry, red, lightPink, darkPink, parrotGreen, blueMariner, blueCurious, brightCyan, shadeGreenCyan, green, lightGreen, shadeYellow, greatLightOrange, lightOrange, burntOrange, silverSand, concrete, osloGrey, darkBlue, aqua, pulpyOrange, blue, yellow];
+const BusinessDataset = (props) => {
+    const { setShowBusinessDataset, businessDataset, generateReport, setGenerateReport, salesTab, handleArchButton } = props;
+    const [ showReport, setShowReport ] = useState(false);
+    const [ activeBusinessDataSet, setActiveBusinessDataSet ] = useState(0);
 
-let childDate = (data, color) => {
-    let chi = (data) => {
-        return data.map(li => {
-            return {
-                ...li,
-                color: color,
-                ...(li.children && { children: chi(li.children) })
+    const navigate = useNavigate();
+
+    const uploadDataset = async () => {
+        try{
+            let data = {
+                "sourceFolderPaths" : ["/python_framework/data/forecasting/finance/bank_marketing_channel"
+                        ,"/python/python_framework/python_framework/config",
+                        "/python/python_framework/python_framework/main_script",
+                       "/python/python_framework/python_framework/manual_calculations",
+                       "/python/python_framework/python_framework/model_saved_file/forecasting/logistics/logistic_Freight Cost",
+                       "/python/python_framework/python_framework/data/model_tuning/forecasting/logistics/logistic_Freight Cost",
+                       "/python/python_framework/python_framework/data/final_results/finance/retail/forecasting/correlation_plot",
+                       "/python/python_framework/python_framework/data/default_values/retail/forecasting/walmart_sales"],
+                "destinationFolderPath":
+                "/CET_webapp_backend_data/enquero/cetuser1/python_framework"
             }
-        })
+            const response = await axios.post("uploadDataSet/transfer-folder", data)
+            setGenerateReport(true)          
+        }
+        catch(err){
+            console.log(err);
+        }
+        handleArchButton(true) 
     }
-    return chi(data);
+    console.log('businessDataset', businessDataset)
+    return (<>
+        <div className='business-dataset'>
+            <div className='' style={{ float: 'right' }}><img style={{ height: 18 }} src={CrossIcon} onClick={() => setShowBusinessDataset(false)} /></div>
+            {showReport ?
+                <ServicesSales salesTab={salesTab} problemSpaceName="segmentation_churn_analysis" businessVerticalName="telecom" datasetName="telecom_company_customer_churn" />
+            :
+            <>
+                {businessDataset.length >= 1 ?
+                    <>
+                        <span className="SELECT-DATASET">SELECT DATASE</span>
+                        <div className='business-datasetRow'>
+                            <div className='business-selectDataset-Column'>
+                                {businessDataset.map((list, i) => (
+                                    <>
+                                        {activeBusinessDataSet === i ?
+                                            <div className='ecommerce-retail'>
+                                                <span className='ecommerce-retail-store'>{list.dataset}</span>
+                                                <img src={RightArrow} className='ecommerce-retail-arrowKey' />
+                                            </div>                        
+                                        : 
+                                        <div className='business-dataset-2' onClick={() => setActiveBusinessDataSet(i)}>{list.dataset}</div>}
+                                    </>
+                                ))}
+                            </div>
+                            <div className='eCommerce-description'>
+                                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    <div><span className="E-Commerce-retail-store-dataset"> E-Commerce retail store dataset </span></div>
+                                    {generateReport && 
+                                    <div>
+                                        <button style={{
+                                            backgroundColor: "#ff555f", width: "200px",
+                                            height: "40px",
+                                            alignItems: 'center',
+                                            // margin: "30.6px 0px",
+                                            padding: '10px 10px 10px 15px',
+                                        }} className='upload-dataset-button' onClick={() => setShowReport(true)}>
+                                            <text className='Upload' style={{ color: '#ffffff' }}>Generate Report</text>
+                                            <img style={{ height: 18 }} src={ArrowUp} />
+                                        </button>
+                                    </div>}
+                                </div>
+                                <div className='ecommerce-Border-Bottom'></div>
+                                <div className="dataset-contains-data">
+                                    {businessDataset[activeBusinessDataSet].datasetDesc}
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                :
+                    <div>No Data Available</div>}
+            </>}
+        </div>
+        {!showReport && businessDataset.length >= 1 &&
+        <div className='upload-dataset'>
+            <button style={{
+                backgroundColor: "#ff555f", width: "200px",
+                height: "40px",
+                alignItems: 'center',
+                margin: "30.6px 0px",
+                padding: '10px 10px 10px 15px',
+            }} className='upload-dataset-button' onClick={() => uploadDataset()}>
+                <text className='Upload' style={{ color: '#ffffff' }}>Upload Dataset</text>
+                <img style={{ height: 18 }} src={ArrowUp} />
+            </button>
+        </div>}
+    </>)
 }
 
-let updateDate = (treeData) => treeData.children.map((list, i) => {
-    let color = colors[i]
-    return {
-        ...list,
-        color,
-        children: childDate(list.children, color)
-    }
-})
-
-const ProblemList = ({ selectedData, selectData }) => {
-
-    const [selectedProblemList, setSelectedProblemList] = useState<string[]>([]);
-    const [showKeywordDialog, setShowKeywordDialog] = useState(false);
-    const [actionTooltipXaxis, setActionTooltipXaxis] = useState<string>('0px');
-    const [actionTooltipYaxis, setActionTooltipYaxis] = useState<string>('0px');
-    const [selectedProblem, setSelectedProblem] = useState('');
-    const [ treeData, setTreeDate ] = useState<any>({ });
-    const [searchedProblemsList, setSearchedProblemsList] = useState<string[]>([]);
-
-    const svgRef = useRef(null);
-
-    useEffect(() => {
-        getTreeData();
-    }, [])
-
-     const getTreeData = async () => {
-        try {
-            let data = {
-                inputFileLocation : ["telecom","segmentation_churn_analysis","telecom_company_customer_churn"]
-            }
-            const response = await axios.post(`businessVerticalTree/data/ ${selectedData.industry.heading}`, data)
-            const res = {
-                ...response.data,
-                children : updateDate(response.data)
-            };
-            setTreeDate(res);
-        } catch (error) {
-            console.log(error);
-        }
-      };
-
-    useEffect(() => {
-        if(selectedData.problemList.length > 0) {
-            setSelectedProblemList(selectedData.problemList)
-        }
-        return () => d3.selectAll("g").remove()
-    }, [])
-
-    useEffect(() => {
-        renderTree();
-    }, [treeData]);
-
-    useEffect(() => {
-        d3.selectAll("g").remove()
-        renderTree();
-    }, [searchedProblemsList, selectedProblemList])
-
-    const renderTree = () => {
-        if(treeData?.children?.length > 0) {
-            // Specify the chart’s dimensions.
-            const width = 928;
-            const height = width;
-            const cx = width * 0.5; // adjust as needed to fit
-            const cy = height * 0.5; // adjust as needed to fit
-
-            // Create the SVG container
-            const svg = d3.select(svgRef.current)
-            .attr('width', width)
-            .attr('height', height)
-            .attr("viewBox", [-cx, -cy, width, height])
-            .attr("style", "width: 100%; height: auto; font: 11px sans-serif;display: block ")
-            // .call(
-            //     d3.drag()
-            //     .on('start', d => {
-            //         console.log('start', svg.selectAll('path'))
-            //     })
-            //     .on('drag', d => {
-            //         console.log('drag', svg.selectAll('path'))
-            //     })
-            //     .on('end', d => {
-            //         console.log('end', svg.selectAll('path'))
-            //     })
-            // )
-
-            // Create a hierarchy from the data
-            const root = d3.hierarchy(treeData);
-
-            // Create a cluster layout
-            const cluster = d3.cluster()
-            .size([360, width / 2 - 200])
-            .separation((a, b) => (a.parent == b.parent ? 1 : 2) / a.depth); // Adjust the radius of the chart
-
-            // Assign positions to the nodes
-            cluster(root.sort((a, b) => d3.ascending(a.data.name, b.data.name)));
-
-            // Create the links
-            svg.selectAll('.link')
-            .data(root.descendants().slice(1))
-            .enter()
-            .append('path')
-            .attr('class', 'link')
-            .attr('d', d => {
-                return `M${project(d.x, d.y)}C${project(d.x, (d.y + d.parent.y) / 2)} ${project(
-                d.parent.x,
-                (d.y + d.parent.y) / 2
-                )} ${project(d.parent.x, d.parent.y)}`;
-            })
-            .style('fill', 'none')
-            .style('stroke', d => d.data.color) // Adjust the color of the links
-            .attr("stroke-width", 2)
-
-            // Create the nodes
-            const nodes = svg.selectAll('.node')
-            .data(root.descendants())
-            .enter()
-            .append('g')
-            .attr('class', 'node')
-            .attr('transform', d => `rotate(${d.x - 90}) translate(${d.y})`)
-
-            nodes.filter(function(d) {
-                return d.depth == 0;
-            }).append("image")
-            .attr("xlink:href", TreeRoot)
-            .attr("x", -40)
-            .attr("y", -10)
-            // .attr('transform', d => `rotate(${d.x + 104}) translate(${d.y})`);
-
-            // Append circles to the nodes
-            nodes.filter(function(d) {
-                return d.depth !== 0;
-            })
-            .append('circle')
-            .style('fill', d => selectedProblemList.includes(d.data.name)? d.data.color : '#fff') // Adjust the color of the nodes
-            .style('stroke', d => d.data.color)
-            .style('stroke-width', 2)
-            .style('cursor', 'pointer')
-            .attr('r', d => d.children ? null : 6)
-            .on("mouseover", (d, item) => {
-                if(item.depth > 1) {
-                    setSelectedProblem(item.data.name);
-                    d3.select("#actionTooltip").style("display", 'flex')
-                    setActionTooltipXaxis(d.offsetX + "px")
-                    setActionTooltipYaxis(d.offsetY + "px")
-                }
-            })
-            .on("mouseleave", function (d) {
-                d3.select("#actionTooltip").style("display", 'none')
-            })
-
-            // Append text labels to the nodes
-            nodes.append('text')
-            .attr('dy', '.31em')
-            .attr("dx", d => d.x < 180 ? 8 : -8)
-            .attr('text-anchor', d => (d.x < 180 ? 'start' : 'end'))
-            .attr("paint-order", "stroke")
-            .attr("stroke", "white")
-            .attr("fill", "currentColor")
-            .attr("text-anchor", d => d.x < 180 ? "start" : "end")
-            .attr("transform", d => d.x < 180 ? null : "rotate(180)")
-            .text(d => d.depth !== 0 ?  d.data.name : null)
-            .text(d=>d.data.name.length>10 ? d.data.name.slice(0,18)+'....' : d.data.name)
-            .attr('id', d => d.data.name)
-            .style('text-shadow', d => (isSearchedProblemPresent(d.data.name, d.parent?.data?.name)  && (d.depth > 1)) ? '0px 0px 10px #ff555f' : 'unset')
-            .style('font-weight','bold')
-            .on("mouseover", (d, item) => {
-                if(item.depth > 1) {
-                    setSelectedProblem(item.data.name);
-                    d3.select("#actionTooltip1").style("display", 'flex')
-                    setActionTooltipXaxis(d.offsetX + "px")
-                    setActionTooltipYaxis(d.offsetY + "px")
-                }
-            })
-            .on("mouseleave", function (d) {
-                d3.select("#actionTooltip1").style("display", 'none')
-            })
-            
-
-            
-
-        }
-    }
-
-    const isSearchedProblemPresent = (problemName, parentName) => {
-        const parentItem = treeData.children?.filter((item) => {
-            return item.name === parentName;
-        });
-        let updatedString = '';
-        if (parentItem.length > 0) {
-            updatedString = `${treeData.name} ${parentItem[0].name}`;
-            parentItem[0].children?.forEach((item) => {
-                if (item.name === problemName) {
-                    updatedString = `${updatedString} ${item?.name}`;
-                    item?.keyWords?.forEach((keyWord) => {
-                        updatedString = `${updatedString} ${keyWord}`;
-                    });
-                }
-            });
-        }
-        const searchedItems = searchedProblemsList.filter((searchedKeyword) => {
-            return updatedString.toLowerCase().includes(searchedKeyword.toLowerCase())
-        })
-        if (searchedItems.length > 0) {
-            return true
-        } else {
-            return false;
-        }
-    };
-
-    // Helper function to project points on the circle
-    const project = (x, y) => {
-        const angle = (x - 90) / 180 * Math.PI;
-        return [y * Math.cos(angle), y * Math.sin(angle)];
-    };
-
-    const updateSelectedItem = (problemName) => {
-        if (problemName) {
-            setShowKeywordDialog(true);
-            setSelectedProblemList(prev => [...prev, problemName]);
-        }
-    }
-
-    const removeSelectedItem = (problemName) => {
-        const updatedSelectedProblemList: string[] = selectedProblemList.filter(item => item !== problemName);
-        setSelectedProblemList(updatedSelectedProblemList);
-        setShowKeywordDialog(true)
-    }
-
-    const isProblemPresent = (problemName) => selectedProblemList.includes(problemName);
-
-    return (
-        <div className="problem-list-outer-container">
-            <KeywordSearch getSearchedProblemList={(problemsList) => setSearchedProblemsList(problemsList)}/>
-            <h1 className="problem-list-heading">{treeData && treeData.name}</h1>
-            <div className="problem-List-container">
-                <svg ref={svgRef} />
-                {showKeywordDialog && <div className="keyword-dialog-parent-container">
-                    <KeywordDialog
-                        selectedProblemList={selectedProblemList}
-                        onClose={() => setShowKeywordDialog(false)}
-                        removeSelectedItem={(problemName) => removeSelectedItem(problemName)}
-                        onProgress={() => selectData('problemList', selectedProblemList)}
-                    />
-                </div>}
-                <div
-                    id="actionTooltip"
-                    onMouseOver={() => d3.select("#actionTooltip").style("display", 'flex')}
-                    onMouseLeave={() => d3.select("#actionTooltip").style("display", 'none')}
-                    className="action-tooltip-container"
-                    style={{ top: actionTooltipYaxis, left: actionTooltipXaxis }}
-                >
-                    <div
-                        style={{color: isProblemPresent(selectedProblem) ? 'rgba(0, 0, 0, 0.23)' : 'black'}} 
-                        onClick={() => (!isProblemPresent(selectedProblem) && updateSelectedItem(selectedProblem))}
-                    >
-                        <ControlPointOutlinedIcon />
-                    <p>Add</p>
-                    </div>
-                    <div
-                        style={{color: !isProblemPresent(selectedProblem) ? 'rgba(0, 0, 0, 0.23)' : 'black'}}
-                        onClick={() => (isProblemPresent(selectedProblem) && removeSelectedItem(selectedProblem))}
-                    >
-                        <RemoveCircleOutlineOutlinedIcon />
-                        <p>Remove</p>
-                    </div>
-                </div>
-
-                <div
-                    id="actionTooltip1"
-                    //onMouseOver={() => d3.select("#actionTooltip").style("display", 'flex')}
-                    //onMouseLeave={() => d3.select("#actionTooltip").style("display", 'none')}
-                    className="action-tooltip-container"
-                    style={{ top: actionTooltipYaxis, left: actionTooltipXaxis }}
-                >
-                    <div
-                        style={{color: isProblemPresent(selectedProblem) ? 'rgba(0, 0, 0, 0.23)' : 'black'}} 
-                        onClick={() => (!isProblemPresent(selectedProblem) && updateSelectedItem(selectedProblem))}
-                    >
-                        <ControlPointOutlinedIcon />
-                        
-                    <p></p>
-                    </div>
-                   
-                </div>
-                
-            </div>
-        </div>
-    );
-};
-
-export default ProblemList;
-----------------------------------------------chatgpt response-------------------------------------------------------------------------
-To add content to the box that appears on hovering over the nodes in the tree diagram, you can modify the renderTree function in the ProblemList component. Currently, there are two action tooltips being rendered, one with the ID actionTooltip and another with the ID actionTooltip1. We'll use the actionTooltip for displaying the content on hover.
-
-1. First, add a state to hold the content to be displayed in the tooltip. Add the following line inside the ProblemList component:
-        const [tooltipContent, setTooltipContent] = useState("");
-
-2. Update the renderTree function to set the tooltipContent state when hovering over a node. Modify the following part of the function:
-.on("mouseover", (d, item) => {
-    if (item.depth > 1) {
-        setSelectedProblem(item.data.name);
-        setTooltipContent(item.data.name); // Set the content for the tooltip
-        d3.select("#actionTooltip").style("display", "flex");
-        setActionTooltipXaxis(d.offsetX + "px");
-        setActionTooltipYaxis(d.offsetY + "px");
-    }
-})
-
-3. Next, modify the JSX content of the ProblemList component to display the tooltipContent inside the actionTooltip div:
-<div
-    id="actionTooltip"
-    onMouseOver={() => d3.select("#actionTooltip").style("display", "flex")}
-    onMouseLeave={() => d3.select("#actionTooltip").style("display", "none")}
-    className="action-tooltip-container"
-    style={{ top: actionTooltipYaxis, left: actionTooltipXaxis }}
->
-    <div>
-        {tooltipContent} {/* Display the tooltip content */}
-    </div>
-    <div
-        style={{
-            color: isProblemPresent(selectedProblem)
-                ? "rgba(0, 0, 0, 0.23)"
-                : "black",
-        }}
-        onClick={() =>
-            !isProblemPresent(selectedProblem) &&
-            updateSelectedItem(selectedProblem)
-        }
-    >
-        <ControlPointOutlinedIcon />
-        <p>Add</p>
-    </div>
-    <div
-        style={{
-            color: !isProblemPresent(selectedProblem)
-                ? "rgba(0, 0, 0, 0.23)"
-                : "black",
-        }}
-        onClick={() =>
-            isProblemPresent(selectedProblem) &&
-            removeSelectedItem(selectedProblem)
-        }
-    >
-        <RemoveCircleOutlineOutlinedIcon />
-        <p>Remove</p>
-    </div>
-</div>
-
-
-With these changes, the content of the tooltip will be updated to display the name of the selected node when hovering over it. 
-The tooltip will show the "Add" and "Remove" buttons as before, but now it will also display the name of the node being hovered over. 
-You can further customize the tooltip's content and style as needed based on your requirements.
+export default BusinessDataset;
