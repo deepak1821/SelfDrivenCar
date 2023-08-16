@@ -1,115 +1,3 @@
-import React, { useState } from 'react';
-import './BusinessVertical.css';
-import RightArrow from '../../assets/RightArrow.png';
-import ArrowUp from '../../assets/ArrowUp.png';
-import CrossIcon from '../../assets/CrossIcon.png';
-import { useNavigate } from 'react-router-dom';
-import ServicesSales from '../ServicesSales/ServicesSales';
-import axios from 'axios';
-
-
-const BusinessDataset = (props) => {
-    const { setShowBusinessDataset, businessDataset, generateReport, setGenerateReport, salesTab, handleArchButton } = props;
-    const [ showReport, setShowReport ] = useState(false);
-    const [ activeBusinessDataSet, setActiveBusinessDataSet ] = useState(0);
-
-    const navigate = useNavigate();
-
-    const uploadDataset = async () => {
-        try{
-            let data = {
-                "sourceFolderPaths" : ["/python_framework/data/forecasting/finance/bank_marketing_channel"
-                        ,"/python/python_framework/python_framework/config",
-                        "/python/python_framework/python_framework/main_script",
-                       "/python/python_framework/python_framework/manual_calculations",
-                       "/python/python_framework/python_framework/model_saved_file/forecasting/logistics/logistic_Freight Cost",
-                       "/python/python_framework/python_framework/data/model_tuning/forecasting/logistics/logistic_Freight Cost",
-                       "/python/python_framework/python_framework/data/final_results/finance/retail/forecasting/correlation_plot",
-                       "/python/python_framework/python_framework/data/default_values/retail/forecasting/walmart_sales"],
-                "destinationFolderPath":
-                "/CET_webapp_backend_data/enquero/cetuser1/python_framework"
-            }
-            const response = await axios.post("uploadDataSet/transfer-folder", data)
-            setGenerateReport(true)          
-        }
-        catch(err){
-            console.log(err);
-        }
-        handleArchButton(true) 
-    }
-    console.log('businessDataset', businessDataset)
-    return (<>
-        <div className='business-dataset'>
-            <div className='' style={{ float: 'right' }}><img style={{ height: 18 }} src={CrossIcon} onClick={() => setShowBusinessDataset(false)} /></div>
-            {showReport ?
-                <ServicesSales salesTab={salesTab} problemSpaceName="segmentation_churn_analysis" businessVerticalName="telecom" datasetName="telecom_company_customer_churn" />
-            :
-            <>
-                {businessDataset.length >= 1 ?
-                    <>
-                        <span className="SELECT-DATASET">SELECT DATASE</span>
-                        <div className='business-datasetRow'>
-                            <div className='business-selectDataset-Column'>
-                                {businessDataset.map((list, i) => (
-                                    <>
-                                        {activeBusinessDataSet === i ?
-                                            <div className='ecommerce-retail'>
-                                                <span className='ecommerce-retail-store'>{list.dataset}</span>
-                                                <img src={RightArrow} className='ecommerce-retail-arrowKey' />
-                                            </div>                        
-                                        : 
-                                        <div className='business-dataset-2' onClick={() => setActiveBusinessDataSet(i)}>{list.dataset}</div>}
-                                    </>
-                                ))}
-                            </div>
-                            <div className='eCommerce-description'>
-                                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                                    <div><span className="E-Commerce-retail-store-dataset"> E-Commerce retail store dataset </span></div>
-                                    {generateReport && 
-                                    <div>
-                                        <button style={{
-                                            backgroundColor: "#ff555f", width: "200px",
-                                            height: "40px",
-                                            alignItems: 'center',
-                                            // margin: "30.6px 0px",
-                                            padding: '10px 10px 10px 15px',
-                                        }} className='upload-dataset-button' onClick={() => setShowReport(true)}>
-                                            <text className='Upload' style={{ color: '#ffffff' }}>Generate Report</text>
-                                            <img style={{ height: 18 }} src={ArrowUp} />
-                                        </button>
-                                    </div>}
-                                </div>
-                                <div className='ecommerce-Border-Bottom'></div>
-                                <div className="dataset-contains-data">
-                                    {businessDataset[activeBusinessDataSet].datasetDesc}
-                                </div>
-                            </div>
-                        </div>
-                    </>
-                :
-                    <div>No Data Available</div>}
-            </>}
-        </div>
-        {!showReport && businessDataset.length >= 1 &&
-        <div className='upload-dataset'>
-            <button style={{
-                backgroundColor: "#ff555f", width: "200px",
-                height: "40px",
-                alignItems: 'center',
-                margin: "30.6px 0px",
-                padding: '10px 10px 10px 15px',
-            }} className='upload-dataset-button' onClick={() => uploadDataset()}>
-                <text className='Upload' style={{ color: '#ffffff' }}>Upload Dataset</text>
-                <img style={{ height: 18 }} src={ArrowUp} />
-            </button>
-        </div>}
-    </>)
-}
-
-export default BusinessDataset;
-
---------------------------------------------------------------------------------------------------------------------\
-PROBLEM SOLVING
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import axios from 'axios';
@@ -230,7 +118,7 @@ const ProblemList = ({ selectedData, selectData }) => {
             .attr('width', width)
             .attr('height', height)
             .attr("viewBox", [-cx, -cy, width, height])
-            .attr("style", "width: 100%; height: auto; font: 10px sans-serif;display: block ")
+            .attr("style", "width: 100%; height: auto; font: 10.5px sans-serif;display: block ")
             
             // .call(
             //     d3.drag()
@@ -333,7 +221,7 @@ const ProblemList = ({ selectedData, selectData }) => {
             .style('text-shadow', d => (isSearchedProblemPresent(d.data.name, d.parent?.data?.name)  && (d.depth > 1)) ? '0px 0px 10px #ff555f' : 'unset')
             .style('font-weight','bold')
             .on("mouseover", (d, item) => {
-                if(item.depth > 1) {
+                if(item.depth >= 1) {
                     setSelectedProblem(item.data.name);
                     setTooltipContent(item.data.name);
                     d3.select("#actionTooltip1").style("display", 'flex')
@@ -401,13 +289,13 @@ const ProblemList = ({ selectedData, selectData }) => {
     return (
         <div className="problem-list-outer-container">
             <KeywordSearch getSearchedProblemList={(problemsList) => setSearchedProblemsList(problemsList)}/>
-            <h1 className="problem-list-heading">{treeData && treeData.name}</h1>
+            <h1 className="problem-list-heading"> Problem Universe -{treeData && treeData.name}</h1>
             <div className="problem-List-container">
                 
                 <svg ref={svgRef} />
                 {showKeywordDialog && <div className="keyword-dialog-parent-container">
                     <KeywordDialog
-                        
+            
                         selectedProblemList={selectedProblemList}
                         onClose={() => setShowKeywordDialog(false)}
                         removeSelectedItem={(problemName) => removeSelectedItem(problemName)}
@@ -466,4 +354,3 @@ const ProblemList = ({ selectedData, selectData }) => {
 };
 
 export default ProblemList;
-
